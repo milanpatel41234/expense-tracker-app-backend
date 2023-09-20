@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./db');
 const signup = require('./routes/signup');
+const login = require('./routes/login');
 
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 db.sequelize.sync();
 
+app.get('/login',login)
 app.post('/signup',signup)
 
 
