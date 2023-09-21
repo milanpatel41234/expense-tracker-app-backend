@@ -12,7 +12,7 @@ app.use(express.json());
 
 db.sequelize.sync();
 
-app.get('/login',login)
+app.post('/login',login)
 app.post('/signup',signup)
 
 

@@ -1,25 +1,26 @@
 const db = require("../db");
+const bcrypt =  require('bcrypt')
 const user = db.user;
 
 const login = (req, res) => {
-  const userEmail = req.query.email;
-  const userPassword = req.query.password;
-  console.log(userEmail, userPassword);
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
   user
     .findOne({
       where: {
         email: userEmail,
       },
     })
-    .then((user) => {
+    .then(async(user) => {
       if (user) {
-        if (user.password === userPassword) {
+     const result = await bcrypt.compare(userPassword , user.password);
+        if (result) {
           res.send({ message: "Login successfully", login: true });
         } else {
-          res.send({ message: "Password incorrect", login: false });
+          res.status(401).send({ message: "Password incorrect", login: false });
         }
       } else {
-        res.send({ message: "This email doesn't exists", login: false });
+        res.status(404).send({ message: "This email doesn't exists", login: false });
       }
     })
     .catch((error) => {
