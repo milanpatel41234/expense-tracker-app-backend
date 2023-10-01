@@ -1,4 +1,4 @@
-const expense = require("../db").expense;
+const expense = require("../database/db").expense;
 
 const deleteexpense = (req, res) => {
   const id = req.params.id;

@@ -12,5 +12,6 @@ db.sequelize = sequelize;
 
 db.user = require('./users')(sequelize,Sequelize)
 db.expense = require('./expense')(sequelize,Sequelize);
+db.order = require('./order')(sequelize,Sequelize);
 
 module.exports = db;

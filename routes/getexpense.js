@@ -1,9 +1,9 @@
-const expense = require("../db").expense;
+const expense = require("../database/db").expense;
 
 const getexpense = (req, res) => {
   expense
     .findAll({
-      where:{userEmail:req.userEmail}
+      where:{userEmail:req.user}
     })
     .then((response) => {
       res.json(response);

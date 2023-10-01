@@ -8,8 +8,12 @@ module.exports = (req , res , next) => {
    const userEmail = decodedToken.userEmail;
  user.findByPk(userEmail)
  .then((user)=>{
- req.user = userEmail;
- next();
+    if(user.ispremium){
+        req.user = userEmail;
+        next();
+    }else{
+       return res.status(405).json({message:'user is not authorized',isPremiumUser:false});
+    }
  })
 .catch((err)=>{ console.log('errrrr',err)
     res.status(405).send({success: false,})

@@ -1,9 +1,9 @@
-const expense = require("../db").expense;
+const expense = require("../database/db").expense;
 
 const postexpense = (req, res) => {
   const data = {
     ...req.body,
-    userEmail:req.userEmail,
+    userEmail:req.user,
   }
   expense
     .create(data)
