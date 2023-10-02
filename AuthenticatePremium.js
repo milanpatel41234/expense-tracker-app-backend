@@ -9,10 +9,11 @@ module.exports = (req , res , next) => {
  user.findByPk(userEmail)
  .then((user)=>{
     if(user.ispremium){
+        console.log("urrrr",user.ispremium)
         req.user = userEmail;
         next();
     }else{
-       return res.status(405).json({message:'user is not authorized',isPremiumUser:false});
+       return res.json({message:'user is not authorized',isPremiumUser:false});
     }
  })
 .catch((err)=>{ console.log('errrrr',err)

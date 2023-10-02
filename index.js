@@ -29,7 +29,7 @@ db.sequelize.sync();
 app.post('/login',login)
 app.post('/signup',signup)
 app.get('/varifypremium',authPremium ,(req,res)=>{
-res.json({success:true ,isPremiumUser:true});
+return res.json({success:true ,isPremiumUser:true});
 })
 app.post('/expense',auth,postexpense)
 app.get('/expense',auth,getexpense)
