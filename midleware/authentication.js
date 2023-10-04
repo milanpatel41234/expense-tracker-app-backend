@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const db = require('./database/db');
+const db = require('../database/db');
 const user = db.user
 
 module.exports = (req , res , next) => {
@@ -8,13 +8,8 @@ module.exports = (req , res , next) => {
    const userEmail = decodedToken.userEmail;
  user.findByPk(userEmail)
  .then((user)=>{
-    if(user.ispremium){
-        console.log("urrrr",user.ispremium)
-        req.user = userEmail;
-        next();
-    }else{
-       return res.json({message:'user is not authorized',isPremiumUser:false});
-    }
+ req.user = userEmail;
+ next();
  })
 .catch((err)=>{ console.log('errrrr',err)
     res.status(405).send({success: false,})
