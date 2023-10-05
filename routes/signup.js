@@ -11,7 +11,7 @@ const signup = (req, res) => {
       if (err) throw new Error(err);
       else {
         user
-          .create({ name, email, password: hash })
+          .create({ name, email, password: hash,total:0})
           .then((response) => {
             res.send(response);
           })
