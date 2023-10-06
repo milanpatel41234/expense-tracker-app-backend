@@ -7,8 +7,8 @@ module.exports = (req , res , next) => {
    const decodedToken = jwt.verify(token,'mykey');
    const userEmail = decodedToken.userEmail;
  user.findByPk(userEmail)
- .then((user)=>{
- req.user = userEmail;
+ .then((usr)=>{
+ req.user = usr;
  next();
  })
 .catch((err)=>{ console.log('errrrr',err)

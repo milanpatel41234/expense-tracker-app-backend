@@ -1,6 +1,4 @@
-const { user } = require("../database/db");
-
-const expense = require("../database/db").expense;
+const { expense, sequelize } = require("../database/db");
 
 const postexpense = async (req, res) => {
   try {
@@ -9,18 +7,22 @@ const postexpense = async (req, res) => {
       date: req.body.date,
       category: req.body.category,
       details: req.body.details,
-      userEmail: req.user,
+      userEmail: req.user.email,
     };
-    const expRes = expense.create(data);
-    const oneUser = user.findByPk(req.user);
-    const [createdExpense, foundUser] = await Promise.all([expRes, oneUser]);
-    const updateUser = await foundUser.update({
-      total: foundUser.total + data.amount,
-    });
-    if (createdExpense.error || foundUser.error || updateUser.error)
+    const transaction = await sequelize.transaction();
+    const createExpense = await expense.create(data, { transaction });
+    const updateUser = await req.user.update(
+      {
+        total: Number(req.user.total) + Number(data.amount),
+      },
+      { transaction }
+    );
+    if (createExpense.error || updateUser.error) {
+      transaction.rollback();
       throw new Error();
-    else {
-      return res.send(createdExpense);
+    } else {
+      transaction.commit();
+      return res.send(createExpense);
     }
   } catch (error) {
     res.send(error);

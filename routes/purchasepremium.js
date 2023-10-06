@@ -16,7 +16,7 @@ const purchasepremium = (req, res) => {
           orderid: order.id,
           amount: amount,
           status: "PENDING",
-          userEmail: req.user,
+          userEmail: req.user.email,
         })
           .then(() => {
             return res.status(201).json({ order, key_id: RZP_KEY_ID });

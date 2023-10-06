@@ -7,9 +7,9 @@ module.exports = (req , res , next) => {
    const decodedToken = jwt.verify(token,'mykey');
    const userEmail = decodedToken.userEmail;
  user.findByPk(userEmail)
- .then((user)=>{
-    if(user.ispremium){
-        req.user = userEmail;
+ .then((usr)=>{
+    if(usr.ispremium){
+        req.user = usr;
         next();
     }else{
        return res.json({message:'user is not authorized',isPremiumUser:false});

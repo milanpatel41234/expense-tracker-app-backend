@@ -3,7 +3,7 @@ const expense = require("../database/db").expense;
 const getexpense = (req, res) => {
   expense
     .findAll({
-      where:{userEmail:req.user}
+      where:{userEmail:req.user.email}
     })
     .then((response) => {
       res.json(response);
