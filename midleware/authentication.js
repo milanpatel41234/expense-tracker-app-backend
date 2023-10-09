@@ -4,8 +4,8 @@ const user = db.user
 
 module.exports = (req , res , next) => {
     const token = req.header('token');
-   const decodedToken = jwt.verify(token,'mykey');
-   const userEmail = decodedToken.userEmail;
+   const {userEmail} = jwt.verify(token,process.env.JWT_KEY);
+ 
  user.findByPk(userEmail)
  .then((usr)=>{
  req.user = usr;

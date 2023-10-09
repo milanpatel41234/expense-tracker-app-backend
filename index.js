@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
+const bodyParser = require('body-parser');
 const db = require('./database/db');
 const auth = require('./midleware/authentication');
 const authPremium = require('./midleware/AuthenticatePremium')
@@ -11,16 +13,19 @@ const deleteexpense = require('./routes/deleteexpense');
 const purchasepremium = require('./routes/purchasepremium');
 const updatepremium = require('./routes/updatepremium');
 const getleaderboard = require('./routes/getleaderboard');
-
+const fgtpassword = require('./routes/resetPassword/forgotpassword')
+const resetPasswordForm = require('./routes/resetPassword/resetPasswordForm')
+const resetPassword = require('./routes/resetPassword/resetPassword')
 
 const app = express();
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const user = db.user;
-const expense = db.expense;
-const order = db.order;
+const {user,expense,order,forgotpassword} = db;
 user.hasMany(expense);
 expense.belongsTo(user);
 user.hasMany(order)
+user.hasMany(forgotpassword)
 order.belongsTo(user);
 
 app.use(cors());
@@ -33,6 +38,9 @@ app.post('/signup',signup)
 app.get('/varifypremium',authPremium ,(req,res)=>{
 return res.json({success:true ,isPremiumUser:true});
 })
+app.post('/forgotpassword',fgtpassword)
+app.get('/resetpassword/:token',resetPasswordForm)
+app.post('/resetpassword/:token',resetPassword)
 
 app.post('/expense',auth,postexpense)
 app.get('/expense',auth,getexpense)

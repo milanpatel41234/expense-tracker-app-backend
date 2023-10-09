@@ -4,19 +4,14 @@ const user = db.user;
 const jwt = require("jsonwebtoken");
 
 const login = (req, res) => {
-  const key = "mykey";
   const userEmail = req.body.email;
   const userPassword = req.body.password;
 
 const generateToken = ()=>{
-   return jwt.sign({userEmail}, key)
+   return jwt.sign({userEmail}, process.env.JWT_KEY)
 }
 
-  user.findOne({
-      where: {
-        email: userEmail,
-      },
-    })
+  user.findByPk(userEmail)
     .then(async (user) => {
       if (user) {
         const result = await bcrypt.compare(userPassword, user.password);

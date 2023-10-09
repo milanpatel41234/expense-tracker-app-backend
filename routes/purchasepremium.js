@@ -1,12 +1,11 @@
 const Razorpay = require("razorpay");
-const { RZP_KEY_ID, RZP_KEY_SECRATE } = require("../sec");
 const Order = require("../database/db").order;
 
 const purchasepremium = (req, res) => {
   try {
     const rzp = new Razorpay({
-      key_id: RZP_KEY_ID,
-      key_secret: RZP_KEY_SECRATE,
+      key_id: process.env.RZP_KEY_ID,
+      key_secret: process.env.RZP_KEY_SECRATE,
     });
     const amount = 299;
     rzp.orders.create({amount:amount, currency: "INR" }, (err, order) => {
