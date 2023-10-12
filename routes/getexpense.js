@@ -1,17 +1,19 @@
-const expense = require("../database/db").expense;
+const {expense } = require("../database/db");
 
-const getexpense = (req, res) => {
-  
-  expense
-    .findAll({
+const getexpense = async(req, res) => {
+  try {
+    const getExpense = await expense.findAll({
       where:{userEmail:req.user.email}
     })
-    .then((response) => {
-      res.json(response);
-    })
-    .catch((err) => {
-      console.log('errrrr',err);
-      res.send(err);
-    });
+    response = {expense:getExpense,
+    total:req.user.total}
+    if(getExpense){
+     return res.json(response);
+    }else throw new Error(getExpense.error)
+    
+  } catch (error) {
+    res.send(error);
+    
+  }
 };
 module.exports = getexpense

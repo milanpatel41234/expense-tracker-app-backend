@@ -14,5 +14,6 @@ db.user = require('./users')(sequelize,Sequelize)
 db.expense = require('./expense')(sequelize,Sequelize);
 db.order = require('./order')(sequelize,Sequelize);
 db.forgotpassword = require('./forgotPassword')(sequelize,Sequelize);
+db.fileurl = require('./fileurl')(sequelize,Sequelize);
 
 module.exports = db;
