@@ -1,13 +1,13 @@
 const { expense } = require("../database/db");
 
 const getexpense = async (req, res) => {
-  const currentpage = req.query.page>1 ? req.query.page : 1;
-  const limit = 5;
+  const currentpage = req.query.page > 1 ? Number(req.query.page) : 1;
+  const limit = req.query.pagelimit > 5 ? Number(req.query.pagelimit) : 5;
   try {
     const fetchTotal_no = expense.count();
     const fetchExpense = expense.findAll({
       where: { userEmail: req.user.email },
-      offset: (currentpage - 1) * 5,
+      offset: (currentpage - 1) * limit,
       limit: limit,
       order: [["updatedat", "DESC"]],
     });
@@ -21,7 +21,7 @@ const getexpense = async (req, res) => {
       total: req.user.total,
       currentpage: currentpage,
       next_page: total_no > currentpage * limit,
-      prev_page: currentpage > 1 ,
+      prev_page: currentpage > 1,
     };
     if (getExpense) {
       return res.json(response);
