@@ -1,19 +1,34 @@
-const {expense } = require("../database/db");
+const { expense } = require("../database/db");
 
-const getexpense = async(req, res) => {
+const getexpense = async (req, res) => {
+  const currentpage = req.query.page>1 ? req.query.page : 1;
+  const limit = 5;
   try {
-    const getExpense = await expense.findAll({
-      where:{userEmail:req.user.email}
-    })
-    response = {expense:getExpense,
-    total:req.user.total}
-    if(getExpense){
-     return res.json(response);
-    }else throw new Error(getExpense.error)
-    
+    const fetchTotal_no = expense.count();
+    const fetchExpense = expense.findAll({
+      where: { userEmail: req.user.email },
+      offset: (currentpage - 1) * 5,
+      limit: limit,
+      order: [["updatedat", "DESC"]],
+    });
+    const [total_no, getExpense] = await Promise.all([
+      fetchTotal_no,
+      fetchExpense,
+    ]);
+
+    response = {
+      expense: getExpense,
+      total: req.user.total,
+      currentpage: currentpage,
+      next_page: total_no > currentpage * limit,
+      prev_page: currentpage > 1 ,
+    };
+    if (getExpense) {
+      return res.json(response);
+    } else throw new Error(getExpense.error);
   } catch (error) {
+    console.log(error);
     res.send(error);
-    
   }
 };
-module.exports = getexpense
+module.exports = getexpense;
