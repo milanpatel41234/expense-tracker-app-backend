@@ -26,7 +26,6 @@ const purchasepremium = (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
     res.status(203).json({ message: "Something went wrong", error: error });
   }
 };

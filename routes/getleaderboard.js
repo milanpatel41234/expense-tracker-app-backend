@@ -9,7 +9,7 @@ const getleaderboard = async(req ,res)=>{
      });
      return res.json(leaderboard);
     } catch (error) {
-       return res.status(500).send()
+       return res.status(500).send(error)
     }
 }
 module.exports = getleaderboard;

@@ -27,7 +27,6 @@ const getexpense = async (req, res) => {
       return res.json(response);
     } else throw new Error(getExpense.error);
   } catch (error) {
-    console.log(error);
     res.send(error);
   }
 };

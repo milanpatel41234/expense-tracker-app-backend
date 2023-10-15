@@ -11,7 +11,7 @@ module.exports = (req , res , next) => {
  req.user = usr;
  next();
  })
-.catch((err)=>{ console.log('errrrr',err)
+.catch((err)=>{
     res.status(405).send({success: false,})
 });
 }

@@ -15,7 +15,7 @@ module.exports = (req , res , next) => {
        return res.json({message:'user is not authorized',isPremiumUser:false});
     }
  })
-.catch((err)=>{ console.log('errrrr',err)
+.catch((err)=>{
     res.status(405).send({success: false,})
 });
 }

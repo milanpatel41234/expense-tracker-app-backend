@@ -18,7 +18,6 @@ try {
 if(orderResponse.error) throw new Error(orderResponse.error)
    return res.json({message:"transaction failed"}) 
 } catch (error) {
-    console.log(error)
     res.status(500).send(error)
 }
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const bodyParser = require('body-parser');
+const helmet = require("helmet");
 const db = require('./database/db');
 const auth = require('./midleware/authentication');
 const authPremium = require('./midleware/AuthenticatePremium');
@@ -20,6 +21,7 @@ const downloadexpense = require('./routes/downloadexpense');
 
 const app = express();
 app.set('view engine', 'ejs');
+app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const {user,expense,order,forgotpassword , fileurl} = db;
@@ -54,4 +56,4 @@ app.get('/downloadexpense', authPremium, downloadexpense);
 
 
 
-app.listen(5000)
+app.listen(process.env.PORT || 5000)

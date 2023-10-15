@@ -38,7 +38,6 @@ module.exports = async(req,res)=>{
         if(addUrlToDatabase.error)throw new Error(addUrlToDatabase.error);
             return res.json({fileURL:fileURL.Location,success:true})
     } catch (error) {
-        console.log(error);
        res.status(500).send({error:error , success:false}); 
     }
     }
