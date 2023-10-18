@@ -17,6 +17,7 @@ let params = {
 }
 return new Promise((resolve, reject) => {
 S3bucket.upload(params,(error , s3response)=>{
+
     if(error) reject(error)
     else resolve(s3response)
 })
@@ -33,6 +34,7 @@ module.exports = async(req,res)=>{
         const stringifiedExpenses = JSON.stringify(userExpenses);
         const filename = `${user.email}${new Date()}.txt`;
         const fileURL = await uploadToS3(stringifiedExpenses, filename);
+        console.log(fileURL);
         if(fileURL.error)throw new Error(fileURL.error); 
         const addUrlToDatabase = await fileurl.create({ url: fileURL.Location})
         if(addUrlToDatabase.error)throw new Error(addUrlToDatabase.error);
