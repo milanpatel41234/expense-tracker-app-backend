@@ -4,7 +4,9 @@ const getexpense = async (req, res) => {
   const currentpage = req.query.page > 1 ? Number(req.query.page) : 1;
   const limit = req.query.pagelimit > 5 ? Number(req.query.pagelimit) : 5;
   try {
-    const fetchTotal_no = expense.count();
+    const fetchTotal_no = expense.count({
+      where: { userEmail: req.user.email },
+    });
     const fetchExpense = expense.findAll({
       where: { userEmail: req.user.email },
       offset: (currentpage - 1) * limit,

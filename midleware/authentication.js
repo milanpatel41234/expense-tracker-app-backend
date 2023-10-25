@@ -4,6 +4,7 @@ const user = db.user
 
 module.exports = (req , res , next) => {
     const token = req.header('token');
+    if(!token)  return res.json({message:'user is not authorized',isPremiumUser:false});
    const {userEmail} = jwt.verify(token,process.env.JWT_KEY);
  
  user.findByPk(userEmail)

@@ -4,6 +4,7 @@ const user = db.user
 
 module.exports = (req , res , next) => {
     const token = req.header('token');
+    if(!token)  return res.json({message:'user is not authorized',isPremiumUser:false});
    const decodedToken = jwt.verify(token,process.env.JWT_KEY);
    const userEmail = decodedToken.userEmail;
  user.findByPk(userEmail)
@@ -16,6 +17,6 @@ module.exports = (req , res , next) => {
     }
  })
 .catch((err)=>{
-    res.status(405).send({success: false,})
+    res.status(405).send({success: false,isPremiumUser:false})
 });
 }
