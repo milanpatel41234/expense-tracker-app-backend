@@ -1,5 +1,5 @@
 const Razorpay = require("razorpay");
-const Order = require("../database/db").order;
+const Order = require('../database/order')
 
 const purchasepremium = (req, res) => {
   try {
@@ -15,10 +15,9 @@ const purchasepremium = (req, res) => {
           orderid: order.id,
           amount: amount,
           status: "PENDING",
-          userEmail: req.user.email,
         })
           .then(() => {
-            return res.status(201).json({ order, key_id: RZP_KEY_ID });
+            return res.status(201).json({ order, key_id: process.env.RZP_KEY_ID });
           })
           .catch((err) => {
             throw new Error(err);

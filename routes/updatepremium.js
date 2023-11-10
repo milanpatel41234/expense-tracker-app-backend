@@ -1,23 +1,21 @@
-const db = require('../database/db');
-const user = db.user;
-const order = db.order;
+const Order = require("../database/order");
 
-module.exports = async(req,res)=>{
-    const userEmail = req.user.email;
-try {
-  const orderResponse = await order.update({status:req.body.status , paymentid:req.body.payment_id},{
-    where:{orderid:req.body.order_id}
-  })
-  if(req.body.status === 'success'){
-    const userResponse = await user.update({ispremium:true},{
-      where:{email:userEmail},
-     });
-     if(userResponse.error) throw new Error(userResponse.error)
-     else return res.json({message:"transaction successful"})
+module.exports = async (req, res) => {
+  const order_id = req.body.order_id;
+  try {
+    const result = await Order.updateOne(
+      { orderid: order_id },
+      { $set: { status: req.body.status, paymentid: req.body.payment_id } }
+    );
+    if (!result.acknowledged) throw new Error("Failed to update");
+    if (req.body.status === "success") {
+      req.user.ispremium = true;
+      await req.user.save();
+      return res.json({ message: "transaction successful" });
+    }
+    return res.json({ message: "transaction failed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
   }
-if(orderResponse.error) throw new Error(orderResponse.error)
-   return res.json({message:"transaction failed"}) 
-} catch (error) {
-    res.status(500).send(error)
-}
-}
+};

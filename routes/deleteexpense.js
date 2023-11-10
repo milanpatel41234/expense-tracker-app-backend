@@ -1,28 +1,21 @@
-const { sequelize, expense } = require("../database/db");
+const mongoose = require("mongoose");
+const Expense = require("../database/expense");
 
 const deleteexpense = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const id = req.params.id;
-    const trans = await sequelize.transaction();
-    const oneExpense = await expense.findByPk(id);
-    const [transaction ,foundExpense] = await Promise.all([trans , oneExpense]);
-    const updateUser =  req.user.update({
-      total: req.user.total - foundExpense.amount,
-    },{transaction});
-    const deleteExpense = foundExpense.destroy({transaction});
-    const [updatedUser, deletedExpense] = await Promise.all([
-      updateUser,
-      deleteExpense,
-    ]);
-    if (updatedUser.error || deletedExpense.error) {
-      transaction.rollback();
-      throw new Error();
-    } else {
-      transaction.commit();
-      return res.send({ success: true, message: "Successfully deleted"});
-    }
+    const deleteExpense = await Expense.findByIdAndDelete(id).session(session);
+    req.user.total = req.user.total - deleteExpense.amount;
+    await req.user.save({ session });
+    await session.commitTransaction();
+    return res.send({ success: true, message: "Successfully deleted" });
   } catch (error) {
-    return res.send({ success: true, message: "Unable to deleted", error });
+    await session.abortTransaction();
+    return res.status(500).send({ success: false, message: "Unable to deleted", error });
+  } finally {
+    session.endSession();
   }
 };
 module.exports = deleteexpense;
