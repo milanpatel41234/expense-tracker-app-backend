@@ -1,7 +1,9 @@
 const Sib = require("sib-api-v3-sdk");
 const client = Sib.ApiClient.instance;
 const { v4 } = require('uuid');
-const {user , forgotpassword} = require("../../database/db");
+const Users = require('../../database/users')
+const Forgotpassword = require('../../database/forgotPassword');
+
 
 module.exports = async (req, res) => {
   const apiKey = client.authentications["api-key"];
@@ -10,12 +12,12 @@ module.exports = async (req, res) => {
   const tranEmailApi = new Sib.TransactionalEmailsApi();
   try {
     const { email } = req.body;
-    const usr = await user.findByPk(email);
+    const user = await Users.findOne({email:userEmail});
 
-    if (usr) {
+    if (user) {
       const Token = v4()
-     const ftpass = await forgotpassword.create({id:Token, isactive:true,userEmail:email});
-     if(ftpass.error) throw new Error(ftpass.error);
+     const ftpass = new Forgotpassword({id:Token, isactive:true,userEmail:email});
+       await ftpass.save();
       const response = await tranEmailApi.sendTransacEmail({
         sender: { email: "mpatel41234@gmail.com", name: "Milan Patel" },
         to: [{ email: email }],

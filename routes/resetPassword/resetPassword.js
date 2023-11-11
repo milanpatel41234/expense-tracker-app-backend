@@ -1,5 +1,6 @@
-const { user, forgotpassword , sequelize } = require("../../database/db");
 const bcrypt = require("bcrypt");
+const Users = require('../../database/users')
+const Forgotpassword = require('../../database/forgotPassword')
 
 module.exports = async (req, res) => {
   const token = req.params.token;
@@ -12,30 +13,26 @@ module.exports = async (req, res) => {
     return res.send("password length must be 8 characters or more");
   }
 
-  const findUser = forgotpassword.findByPk(token);
-  const trans = sequelize.transaction();
-  const [getUser, transaction] = await Promise.all([findUser, trans]);
+  const getUser = await Forgotpassword.findOne({id:token});
   if (getUser && getUser.isactive) {
-    bcrypt.hash(newPassword, 10, async (err, hash) => {
-      if (err) throw new Error(err);
-      else {
-        const ftpass = getUser.update({ isactive: false }, { transaction });
-        const usr = user.update(
-          { password: hash },
-          {
-            where: { email: getUser.userEmail },
-          },
-          { transaction }
-        );
-        const [passwordUpdated, userUpdated] = await Promise.all([ftpass, usr]);
-        if (passwordUpdated && userUpdated) {
-          transaction.commit();
-          return res.send("password updated successfully");
-        }
-        transaction.rollback();
-        return res.send("something failed , please try again after some time");
-      }
-    });
+    try {
+      bcrypt.hash(newPassword, 10, async (err, hash) => {
+        if (err) throw new Error(err);
+        else {
+          const usr = Users.update(
+            { email: getUser.userEmail },
+            {$set: {password: hash}}
+          );
+          getUser.isactive = false;
+          await getUser.save();
+         
+            return res.send("password updated successfully");
+          }
+        });
+      } catch (error) {
+      return res.send("something failed , please try again after some time");
+      
+    }
   } else {
     return res.status(401).send("Link expired or invalid");
   }

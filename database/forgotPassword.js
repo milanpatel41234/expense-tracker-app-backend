@@ -1,11 +1,10 @@
-module.exports = (sequelize, Sequelize) => {
-    const forgotpassword = sequelize.define("forgotpassword", {
-      id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        primaryKey: true,
-      },
-      isactive:Sequelize.BOOLEAN,
-    });
-    return forgotpassword;
-  };
+const mongoose = require('mongoose');
+
+const forgotpasswordSchema = new mongoose.Schema({
+  isactive:Boolean,
+  userEmail:String,
+  id:String,
+})
+module.exports = mongoose.model('forgotpassword', forgotpasswordSchema)
+
+
